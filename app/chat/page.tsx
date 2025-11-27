@@ -225,7 +225,7 @@ export default function ChatPage() {
   const sessionGroups = groupSessionsByDate();
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex h-screen bg-gray-50">
       {/* Sidebar with smooth transition */}
       <div
         className={`bg-gray-900 text-white flex flex-col transition-all duration-300 ease-in-out ${
@@ -364,7 +364,7 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-white">
+      <div className="flex-1 flex flex-col bg-gray-50">
         {/* Header */}
         <div className="bg-white border-b border-gray-200 p-4 flex items-center shadow-sm">
           <button
@@ -476,7 +476,7 @@ export default function ChatPage() {
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-gray-200 bg-white">
+        <div className="border-t border-gray-200 bg-gray-50">
           <div className="max-w-3xl mx-auto px-4 py-4">
             <form onSubmit={sendMessage} className="relative">
               <div className="relative flex items-end gap-2 bg-white border border-gray-300 rounded-2xl shadow-sm focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500 focus-within:ring-opacity-20 transition-all duration-150">

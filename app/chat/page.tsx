@@ -63,7 +63,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 200) + 'px';
+      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px';
     }
   }, [input]);
 
@@ -477,33 +477,46 @@ export default function ChatPage() {
 
         {/* Input Area */}
         <div className="border-t border-gray-700 bg-gray-800">
-          <div className="max-w-3xl mx-auto px-4 py-4">
+          <div className="max-w-3xl mx-auto px-4 py-3">
             <form onSubmit={sendMessage} className="relative">
-              <div className="relative flex items-end gap-2 bg-gray-700 border border-gray-600 rounded-2xl shadow-sm focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500 focus-within:ring-opacity-20 transition-all duration-150">
+              <div className="relative flex items-center gap-2 bg-gray-700 border border-gray-600 rounded-xl shadow-sm focus-within:border-teal-500 focus-within:ring-1 focus-within:ring-teal-500 focus-within:ring-opacity-20 transition-all duration-150">
+                {/* Plus button for file upload */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    // TODO: Implement file upload functionality
+                    console.log('File upload clicked');
+                  }}
+                  className="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-200 p-1.5 rounded-lg hover:bg-gray-600 transition-colors duration-150"
+                  title="Upload files or images"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+
                 <textarea
                   ref={textareaRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Message LLM Chat..."
-                  className="flex-1 px-4 py-3 bg-transparent resize-none focus:outline-none text-gray-100 placeholder-gray-400 text-base leading-relaxed max-h-[200px]"
+                  className="flex-1 px-2 py-2.5 bg-transparent resize-none focus:outline-none text-gray-100 placeholder-gray-400 text-sm leading-relaxed max-h-[120px]"
                   disabled={loading}
                   rows={1}
-                  style={{ minHeight: '52px' }}
+                  style={{ minHeight: '40px' }}
                 />
+
                 <button
                   type="submit"
                   disabled={loading || !input.trim()}
-                  className="flex-shrink-0 m-2 bg-teal-500 text-white p-2 rounded-lg hover:bg-teal-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-150"
+                  className="flex-shrink-0 mr-2 bg-teal-500 text-white p-1.5 rounded-lg hover:bg-teal-600 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-150"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
                 </button>
               </div>
-              <p className="text-xs text-gray-500 mt-2 text-center">
-                Press Enter to send, Shift + Enter for new line
-              </p>
             </form>
           </div>
         </div>

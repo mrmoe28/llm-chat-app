@@ -225,7 +225,7 @@ export default function ChatPage() {
   const sessionGroups = groupSessionsByDate();
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-800">
       {/* Sidebar with smooth transition */}
       <div
         className={`bg-gray-900 text-white flex flex-col transition-all duration-300 ease-in-out ${
@@ -364,18 +364,18 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-gray-50">
+      <div className="flex-1 flex flex-col bg-gray-800">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 p-4 flex items-center shadow-sm">
+        <div className="bg-gray-800 border-b border-gray-700 p-4 flex items-center">
           <button
             onClick={() => setShowSidebar(!showSidebar)}
-            className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg p-2 transition-colors duration-150"
+            className="text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg p-2 transition-colors duration-150"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <h1 className="text-lg font-semibold text-gray-800 ml-4">
+          <h1 className="text-lg font-semibold text-white ml-4">
             LLM Chat
           </h1>
         </div>
@@ -386,12 +386,12 @@ export default function ChatPage() {
             {messages.length === 0 ? (
               <div className="text-center text-gray-400 mt-32">
                 <div className="mb-4">
-                  <svg className="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-16 h-16 mx-auto text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
-                <p className="text-2xl font-semibold text-gray-700 mb-2">Start a conversation</p>
-                <p className="text-sm text-gray-500">Ask me anything or choose a project from the sidebar</p>
+                <p className="text-2xl font-semibold text-gray-200 mb-2">Start a conversation</p>
+                <p className="text-sm text-gray-400">Ask me anything or choose a project from the sidebar</p>
               </div>
             ) : (
               messages.map((message) => (
@@ -404,7 +404,7 @@ export default function ChatPage() {
                     <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                       message.role === 'user'
                         ? 'bg-teal-500 text-white'
-                        : 'bg-gray-200 text-gray-700'
+                        : 'bg-gray-600 text-gray-200'
                     }`}>
                       {message.role === 'user' ? userEmail.charAt(0).toUpperCase() : 'AI'}
                     </div>
@@ -412,12 +412,12 @@ export default function ChatPage() {
                     {/* Message content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-semibold text-gray-200">
                           {message.role === 'user' ? 'You' : 'Assistant'}
                         </span>
                       </div>
                       <div className="prose prose-sm max-w-none">
-                        <p className="text-gray-800 whitespace-pre-wrap leading-relaxed text-base">
+                        <p className="text-gray-100 whitespace-pre-wrap leading-relaxed text-base">
                           {message.content}
                         </p>
                       </div>
@@ -427,7 +427,7 @@ export default function ChatPage() {
                         <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
                           <button
                             onClick={() => copyMessage(message.id, message.content)}
-                            className="text-xs text-gray-500 hover:text-teal-600 flex items-center gap-1 transition-colors duration-150"
+                            className="text-xs text-gray-400 hover:text-teal-400 flex items-center gap-1 transition-colors duration-150"
                           >
                             {copiedMessageId === message.id ? (
                               <>
@@ -455,12 +455,12 @@ export default function ChatPage() {
             {loading && (
               <div className="group animate-slideIn">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center text-sm font-semibold">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-600 text-gray-200 flex items-center justify-center text-sm font-semibold">
                     AI
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-semibold text-gray-900">Assistant</span>
+                      <span className="text-sm font-semibold text-gray-200">Assistant</span>
                     </div>
                     <p className="flex items-center gap-2">
                       <span className="inline-block w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
@@ -476,17 +476,17 @@ export default function ChatPage() {
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-gray-200 bg-gray-50">
+        <div className="border-t border-gray-700 bg-gray-800">
           <div className="max-w-3xl mx-auto px-4 py-4">
             <form onSubmit={sendMessage} className="relative">
-              <div className="relative flex items-end gap-2 bg-white border border-gray-300 rounded-2xl shadow-sm focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500 focus-within:ring-opacity-20 transition-all duration-150">
+              <div className="relative flex items-end gap-2 bg-gray-700 border border-gray-600 rounded-2xl shadow-sm focus-within:border-teal-500 focus-within:ring-2 focus-within:ring-teal-500 focus-within:ring-opacity-20 transition-all duration-150">
                 <textarea
                   ref={textareaRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Message LLM Chat..."
-                  className="flex-1 px-4 py-3 bg-transparent resize-none focus:outline-none text-gray-900 placeholder-gray-400 text-base leading-relaxed max-h-[200px]"
+                  className="flex-1 px-4 py-3 bg-transparent resize-none focus:outline-none text-gray-100 placeholder-gray-400 text-base leading-relaxed max-h-[200px]"
                   disabled={loading}
                   rows={1}
                   style={{ minHeight: '52px' }}
@@ -501,7 +501,7 @@ export default function ChatPage() {
                   </svg>
                 </button>
               </div>
-              <p className="text-xs text-gray-400 mt-2 text-center">
+              <p className="text-xs text-gray-500 mt-2 text-center">
                 Press Enter to send, Shift + Enter for new line
               </p>
             </form>

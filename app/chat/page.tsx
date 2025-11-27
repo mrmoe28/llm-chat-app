@@ -34,6 +34,7 @@ export default function ChatPage() {
   const [showSidebar, setShowSidebar] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [projects] = useState<Project[]>([
     { id: '1', name: 'Personal Assistant', icon: '🤖' },
     { id: '2', name: 'Code Helper', icon: '💻' },
@@ -41,6 +42,7 @@ export default function ChatPage() {
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -90,10 +92,11 @@ export default function ChatPage() {
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || loading) return;
+    if ((!input.trim() && selectedFiles.length === 0) || loading) return;
 
     const userMessage = input.trim();
     setInput('');
+    setSelectedFiles([]);
     setLoading(true);
 
     // Add user message to UI immediately
@@ -158,9 +161,26 @@ export default function ChatPage() {
     setTimeout(() => setCopiedMessageId(null), 2000);
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const newFiles = Array.from(files);
+      setSelectedFiles((prev) => [...prev, ...newFiles]);
+      // Reset input so same file can be selected again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const startNewChat = () => {
     setMessages([]);
     setCurrentSessionId(null);
+    setSelectedFiles([]);
   };
 
   const deleteSession = async (sessionId: string) => {
@@ -478,15 +498,47 @@ export default function ChatPage() {
         {/* Input Area */}
         <div className="border-t border-gray-700 bg-gray-800">
           <div className="max-w-3xl mx-auto px-4 py-3">
+            {/* Selected files display */}
+            {selectedFiles.length > 0 && (
+              <div className="mb-2 flex flex-wrap gap-2">
+                {selectedFiles.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-sm"
+                  >
+                    <span className="text-gray-300 truncate max-w-[200px]">
+                      {file.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => removeFile(index)}
+                      className="text-gray-400 hover:text-red-400 transition-colors duration-150"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <form onSubmit={sendMessage} className="relative">
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/*,application/pdf,.doc,.docx,.txt"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+
               <div className="relative flex items-center gap-2 bg-gray-700 border border-gray-600 rounded-xl shadow-sm focus-within:border-teal-500 focus-within:ring-1 focus-within:ring-teal-500 focus-within:ring-opacity-20 transition-all duration-150">
                 {/* Plus button for file upload */}
                 <button
                   type="button"
-                  onClick={() => {
-                    // TODO: Implement file upload functionality
-                    console.log('File upload clicked');
-                  }}
+                  onClick={() => fileInputRef.current?.click()}
                   className="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-200 p-1.5 rounded-lg hover:bg-gray-600 transition-colors duration-150"
                   title="Upload files or images"
                 >
@@ -509,7 +561,7 @@ export default function ChatPage() {
 
                 <button
                   type="submit"
-                  disabled={loading || !input.trim()}
+                  disabled={loading || (!input.trim() && selectedFiles.length === 0)}
                   className="flex-shrink-0 mr-2 bg-teal-500 text-white p-1.5 rounded-lg hover:bg-teal-600 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-150"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

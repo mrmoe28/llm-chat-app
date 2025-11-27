@@ -37,8 +37,11 @@ export async function POST(request: NextRequest) {
 
     // Get conversation history
     const messages = await getSessionMessages(currentSessionId);
-    const conversationHistory = messages.map(msg => ({
-      role: msg.role,
+    const conversationHistory: Array<{
+      role: 'system' | 'user' | 'assistant';
+      content: string;
+    }> = messages.map(msg => ({
+      role: msg.role as 'user' | 'assistant',
       content: msg.content
     }));
 

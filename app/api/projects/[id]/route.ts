@@ -3,7 +3,7 @@ import { getProjectById, updateProject, deleteProject } from '@/lib/db';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { searchParams } = new URL(request.url);
@@ -16,7 +16,8 @@ export async function GET(
       );
     }
 
-    const project = await getProjectById(params.id, userId);
+    const { id } = await params;
+    const project = await getProjectById(id, userId);
 
     if (!project) {
       return NextResponse.json(
@@ -37,7 +38,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
@@ -56,7 +57,8 @@ export async function PUT(
     if (description !== undefined) updates.description = description;
     if (systemPrompt !== undefined) updates.system_prompt = systemPrompt;
 
-    const project = await updateProject(params.id, userId, updates);
+    const { id } = await params;
+    const project = await updateProject(id, userId, updates);
 
     if (!project) {
       return NextResponse.json(
@@ -77,7 +79,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { searchParams } = new URL(request.url);
@@ -90,7 +92,8 @@ export async function DELETE(
       );
     }
 
-    await deleteProject(params.id, userId);
+    const { id } = await params;
+    await deleteProject(id, userId);
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Delete project error:', error);

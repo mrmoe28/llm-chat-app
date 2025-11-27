@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 // GET: Retrieve all documents for a project
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { searchParams } = new URL(request.url);
@@ -24,7 +24,8 @@ export async function GET(
       );
     }
 
-    const documents = await getProjectDocuments(params.id, userId);
+    const { id } = await params;
+    const documents = await getProjectDocuments(id, userId);
     return NextResponse.json({ documents });
   } catch (error: any) {
     console.error('Get documents error:', error);
@@ -38,7 +39,7 @@ export async function GET(
 // POST: Upload a new document
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const formData = await request.formData();
@@ -82,9 +83,11 @@ export async function POST(
     // For now, store as base64 in the database (Vercel Blob will be implemented by Agent 4)
     const storagePath = `data:${file.type};base64,${buffer.toString('base64')}`;
 
+    const { id } = await params;
+
     // Create document record
     const document = await createDocument(
-      params.id,
+      id,
       userId,
       uniqueFilename,
       file.name,
@@ -105,7 +108,7 @@ export async function POST(
     for (let i = 0; i < chunks.length; i++) {
       await createDocumentChunk(
         document.id,
-        params.id,
+        id,
         i,
         chunks[i],
         chunks[i].split(/\s+/).length // Approximate token count
@@ -129,7 +132,7 @@ export async function POST(
 // DELETE: Remove a document
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { searchParams } = new URL(request.url);
@@ -143,9 +146,11 @@ export async function DELETE(
       );
     }
 
+    const { id } = await params;
+
     // Verify document belongs to user and project
     const document = await getDocumentById(documentId, userId);
-    if (!document || document.project_id !== params.id) {
+    if (!document || document.project_id !== id) {
       return NextResponse.json(
         { error: 'Document not found' },
         { status: 404 }

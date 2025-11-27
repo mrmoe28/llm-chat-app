@@ -22,19 +22,23 @@ export default function ChatPage() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [showSidebar, setShowSidebar] = useState(true);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
+    const storedEmail = localStorage.getItem('userEmail');
     if (!storedUserId) {
       router.push('/');
       return;
     }
     setUserId(storedUserId);
+    setUserEmail(storedEmail || '');
     loadSessions(storedUserId);
   }, [router]);
 
@@ -215,7 +219,42 @@ export default function ChatPage() {
           <h1 className="text-xl font-semibold text-gray-800">
             LLM Chat
           </h1>
-          <div className="w-8"></div>
+
+          {/* User Menu */}
+          <div className="relative">
+            <button
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition font-semibold"
+            >
+              {userEmail.charAt(0).toUpperCase()}
+            </button>
+
+            {showUserMenu && (
+              <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10">
+                <div className="px-4 py-2 border-b border-gray-100">
+                  <p className="text-sm font-medium text-gray-800">{userEmail}</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    router.push('/settings');
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+                >
+                  ⚙️ Settings
+                </button>
+                <button
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    handleLogout();
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition"
+                >
+                  🚪 Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Messages */}

@@ -23,6 +23,15 @@ export interface ChatSession {
   updated_at: Date;
 }
 
+export interface ApiKey {
+  id: string;
+  user_id: string;
+  key: string;
+  name: string;
+  last_used: Date | null;
+  created_at: Date;
+}
+
 // Initialize database tables
 export async function initDatabase() {
   try {
@@ -59,9 +68,23 @@ export async function initDatabase() {
       )
     `;
 
+    // Create api_keys table
+    await sql`
+      CREATE TABLE IF NOT EXISTS api_keys (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        key VARCHAR(255) UNIQUE NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        last_used TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+
     // Create indexes
     await sql`CREATE INDEX IF NOT EXISTS idx_messages_session ON chat_messages(session_id)`;
     await sql`CREATE INDEX IF NOT EXISTS idx_sessions_user ON chat_sessions(user_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_apikeys_user ON api_keys(user_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_apikeys_key ON api_keys(key)`;
 
     console.log('Database initialized successfully');
   } catch (error) {
@@ -144,4 +167,46 @@ export async function getSessionMessages(sessionId: string) {
     ORDER BY created_at ASC
   `;
   return result.rows as ChatMessage[];
+}
+
+// API Key operations
+export async function createApiKey(userId: string, name: string, key: string) {
+  const result = await sql`
+    INSERT INTO api_keys (user_id, name, key)
+    VALUES (${userId}, ${name}, ${key})
+    RETURNING id, user_id, key, name, last_used, created_at
+  `;
+  return result.rows[0] as ApiKey;
+}
+
+export async function getUserApiKeys(userId: string) {
+  const result = await sql`
+    SELECT id, user_id, key, name, last_used, created_at
+    FROM api_keys
+    WHERE user_id = ${userId}
+    ORDER BY created_at DESC
+  `;
+  return result.rows as ApiKey[];
+}
+
+export async function getApiKeyDetails(key: string) {
+  const result = await sql`
+    SELECT * FROM api_keys WHERE key = ${key}
+  `;
+  return result.rows[0] as ApiKey | undefined;
+}
+
+export async function updateApiKeyLastUsed(keyId: string) {
+  await sql`
+    UPDATE api_keys
+    SET last_used = CURRENT_TIMESTAMP
+    WHERE id = ${keyId}
+  `;
+}
+
+export async function deleteApiKey(keyId: string, userId: string) {
+  await sql`
+    DELETE FROM api_keys
+    WHERE id = ${keyId} AND user_id = ${userId}
+  `;
 }

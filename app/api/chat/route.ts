@@ -124,12 +124,36 @@ export async function POST(request: NextRequest) {
       message: assistantMessage,
       sessionId: currentSessionId,
       sources: sources.length > 0 ? sources : undefined,
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      }
     });
   } catch (error: any) {
     console.error('Chat API error:', error);
     return NextResponse.json(
       { error: error.message || 'Internal server error' },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        }
+      }
     );
   }
+}
+
+// Handle CORS preflight
+export async function OPTIONS() {
+  return NextResponse.json({}, {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    }
+  });
 }

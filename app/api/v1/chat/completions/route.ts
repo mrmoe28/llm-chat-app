@@ -62,12 +62,36 @@ export async function POST(request: NextRequest) {
     const data = await response.json();
 
     // Return OpenAI-compatible response
-    return NextResponse.json(data);
+    return NextResponse.json(data, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      }
+    });
   } catch (error: any) {
     console.error('Chat completions API error:', error);
     return NextResponse.json(
       { error: { message: error.message || 'Internal server error', type: 'api_error' } },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        }
+      }
     );
   }
+}
+
+// Handle CORS preflight
+export async function OPTIONS() {
+  return NextResponse.json({}, {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    }
+  });
 }

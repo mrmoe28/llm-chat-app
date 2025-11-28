@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'local-model',
+        model: process.env.LM_STUDIO_MODEL || 'liquid/lfm2-1.2b',
         messages: conversationHistory,
         temperature: 0.7,
         max_tokens: 2000,

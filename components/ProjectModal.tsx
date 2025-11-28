@@ -68,16 +68,16 @@ export default function ProjectModal({ isOpen, onClose, onSave, project, userId 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div className="bg-brownish-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-brownish-gray-700">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+        <div className="flex items-center justify-between p-6 border-b border-brownish-gray-700">
           <h2 className="text-xl font-semibold text-white">
             {project ? 'Edit Project' : 'Create New Project'}
           </h2>
           <button
             onClick={handleClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-brownish-gray-400 hover:text-white transition-colors rounded-lg p-1 hover:bg-brownish-gray-700"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -91,19 +91,19 @@ export default function ProjectModal({ isOpen, onClose, onSave, project, userId 
           <div className="flex gap-4">
             {/* Icon Picker */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-brownish-gray-300 mb-2">
                 Icon
               </label>
               <button
                 type="button"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center text-3xl hover:bg-gray-600 transition-colors"
+                className="w-16 h-16 bg-brownish-gray-700 rounded-xl flex items-center justify-center text-3xl hover:bg-brownish-gray-600 transition-colors border border-brownish-gray-600"
               >
                 {icon}
               </button>
 
               {showEmojiPicker && (
-                <div className="absolute top-full left-0 mt-2 bg-gray-700 rounded-lg p-3 shadow-xl border border-gray-600 z-10">
+                <div className="absolute top-full left-0 mt-2 bg-brownish-gray-700 rounded-xl p-3 shadow-2xl border border-brownish-gray-600 z-10">
                   <div className="grid grid-cols-4 gap-2">
                     {EMOJI_OPTIONS.map((emoji) => (
                       <button
@@ -113,8 +113,8 @@ export default function ProjectModal({ isOpen, onClose, onSave, project, userId 
                           setIcon(emoji);
                           setShowEmojiPicker(false);
                         }}
-                        className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl hover:bg-gray-600 transition-colors ${
-                          icon === emoji ? 'bg-teal-500' : 'bg-gray-800'
+                        className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl hover:bg-brownish-gray-600 transition-colors ${
+                          icon === emoji ? 'bg-brownish-gray-600 ring-2 ring-brownish-gray-500' : 'bg-brownish-gray-800'
                         }`}
                       >
                         {emoji}
@@ -127,7 +127,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project, userId 
 
             {/* Name */}
             <div className="flex-1">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-brownish-gray-300 mb-2">
                 Project Name <span className="text-red-400">*</span>
               </label>
               <input
@@ -136,7 +136,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project, userId 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g., Personal Assistant"
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                className="w-full px-4 py-2 bg-brownish-gray-950 border border-brownish-gray-700 rounded-xl text-white placeholder-brownish-gray-500 focus:outline-none focus:border-brownish-gray-600 focus:ring-2 focus:ring-brownish-gray-600"
                 required
               />
             </div>
@@ -144,7 +144,7 @@ export default function ProjectModal({ isOpen, onClose, onSave, project, userId 
 
           {/* Description */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="description" className="block text-sm font-medium text-brownish-gray-300 mb-2">
               Description
             </label>
             <textarea
@@ -153,13 +153,13 @@ export default function ProjectModal({ isOpen, onClose, onSave, project, userId 
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Brief description of this project..."
               rows={3}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 resize-none"
+              className="w-full px-4 py-2 bg-brownish-gray-950 border border-brownish-gray-700 rounded-xl text-white placeholder-brownish-gray-500 focus:outline-none focus:border-brownish-gray-600 focus:ring-2 focus:ring-brownish-gray-600 resize-none"
             />
           </div>
 
           {/* System Prompt */}
           <div>
-            <label htmlFor="systemPrompt" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="systemPrompt" className="block text-sm font-medium text-brownish-gray-300 mb-2">
               System Prompt
             </label>
             <textarea
@@ -168,25 +168,25 @@ export default function ProjectModal({ isOpen, onClose, onSave, project, userId 
               onChange={(e) => setSystemPrompt(e.target.value)}
               placeholder="Instructions for the AI assistant in this project..."
               rows={5}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 resize-none"
+              className="w-full px-4 py-2 bg-brownish-gray-950 border border-brownish-gray-700 rounded-xl text-white placeholder-brownish-gray-500 focus:outline-none focus:border-brownish-gray-600 focus:ring-2 focus:ring-brownish-gray-600 resize-none"
             />
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-brownish-gray-400">
               Define how the AI should behave for this project
             </p>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-700">
+          <div className="flex justify-end gap-3 pt-4 border-t border-brownish-gray-700">
             <button
               type="button"
               onClick={handleClose}
-              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+              className="px-4 py-2 bg-brownish-gray-700 text-white rounded-xl hover:bg-brownish-gray-600 transition-colors border border-brownish-gray-600"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
+              className="px-4 py-2 bg-brownish-gray-600 text-white rounded-xl hover:bg-brownish-gray-500 transition-colors shadow-lg hover:shadow-xl"
             >
               {project ? 'Update Project' : 'Create Project'}
             </button>

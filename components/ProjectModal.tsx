@@ -1,0 +1,198 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Project } from '@/lib/db';
+
+interface ProjectModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (project: Partial<Project>) => void;
+  project?: Project | null;
+  userId: string;
+}
+
+const EMOJI_OPTIONS = ['📁', '💼', '🚀', '📊', '💡', '🎯', '📚', '🔬', '🎨', '🏠', '💻', '✨'];
+
+export default function ProjectModal({ isOpen, onClose, onSave, project, userId }: ProjectModalProps) {
+  const [name, setName] = useState('');
+  const [icon, setIcon] = useState('📁');
+  const [description, setDescription] = useState('');
+  const [systemPrompt, setSystemPrompt] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  useEffect(() => {
+    if (project) {
+      setName(project.name);
+      setIcon(project.icon);
+      setDescription(project.description || '');
+      setSystemPrompt(project.system_prompt || '');
+    } else {
+      setName('');
+      setIcon('📁');
+      setDescription('');
+      setSystemPrompt('');
+    }
+  }, [project, isOpen]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!name.trim()) {
+      alert('Project name is required');
+      return;
+    }
+
+    onSave({
+      name: name.trim(),
+      icon,
+      description: description.trim() || null,
+      system_prompt: systemPrompt.trim() || null,
+    });
+
+    // Reset form
+    setName('');
+    setIcon('📁');
+    setDescription('');
+    setSystemPrompt('');
+  };
+
+  const handleClose = () => {
+    setName('');
+    setIcon('📁');
+    setDescription('');
+    setSystemPrompt('');
+    setShowEmojiPicker(false);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+          <h2 className="text-xl font-semibold text-white">
+            {project ? 'Edit Project' : 'Create New Project'}
+          </h2>
+          <button
+            onClick={handleClose}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Name and Icon */}
+          <div className="flex gap-4">
+            {/* Icon Picker */}
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Icon
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center text-3xl hover:bg-gray-600 transition-colors"
+              >
+                {icon}
+              </button>
+
+              {showEmojiPicker && (
+                <div className="absolute top-full left-0 mt-2 bg-gray-700 rounded-lg p-3 shadow-xl border border-gray-600 z-10">
+                  <div className="grid grid-cols-4 gap-2">
+                    {EMOJI_OPTIONS.map((emoji) => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        onClick={() => {
+                          setIcon(emoji);
+                          setShowEmojiPicker(false);
+                        }}
+                        className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl hover:bg-gray-600 transition-colors ${
+                          icon === emoji ? 'bg-teal-500' : 'bg-gray-800'
+                        }`}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Name */}
+            <div className="flex-1">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                Project Name <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g., Personal Assistant"
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-2">
+              Description
+            </label>
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Brief description of this project..."
+              rows={3}
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 resize-none"
+            />
+          </div>
+
+          {/* System Prompt */}
+          <div>
+            <label htmlFor="systemPrompt" className="block text-sm font-medium text-gray-300 mb-2">
+              System Prompt
+            </label>
+            <textarea
+              id="systemPrompt"
+              value={systemPrompt}
+              onChange={(e) => setSystemPrompt(e.target.value)}
+              placeholder="Instructions for the AI assistant in this project..."
+              rows={5}
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 resize-none"
+            />
+            <p className="mt-1 text-xs text-gray-400">
+              Define how the AI should behave for this project
+            </p>
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-700">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
+            >
+              {project ? 'Update Project' : 'Create Project'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

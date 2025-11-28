@@ -38,6 +38,7 @@ export default function ChatPage() {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [showDocumentsPanel, setShowDocumentsPanel] = useState(false);
   const [documentCount, setDocumentCount] = useState(0);
+  const [webSearchEnabled, setWebSearchEnabled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -142,6 +143,7 @@ export default function ChatPage() {
           message: userMessage,
           userId,
           sessionId: currentSessionId,
+          webSearchEnabled,
         }),
       });
 
@@ -676,9 +678,28 @@ export default function ChatPage() {
         {/* Input Area */}
         <div className="border-t border-brownish-gray-800 bg-brownish-gray-900">
           <div className="max-w-3xl mx-auto px-4 py-3">
-            {/* Selected files display */}
-            {selectedFiles.length > 0 && (
+            {/* Selected files and web search indicator */}
+            {(selectedFiles.length > 0 || webSearchEnabled) && (
               <div className="mb-2 flex flex-wrap gap-2">
+                {/* Web search indicator */}
+                {webSearchEnabled && (
+                  <div className="flex items-center gap-2 bg-brownish-gray-700 border border-brownish-gray-600 rounded-xl px-3 py-1.5 text-sm">
+                    <svg className="w-4 h-4 text-brownish-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                    <span className="text-brownish-gray-200">Web Search</span>
+                    <button
+                      type="button"
+                      onClick={() => setWebSearchEnabled(false)}
+                      className="text-brownish-gray-400 hover:text-red-400 transition-colors duration-150"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+                {/* Selected files */}
                 {selectedFiles.map((file, index) => (
                   <div
                     key={index}
@@ -722,6 +743,22 @@ export default function ChatPage() {
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+
+                {/* Web Search Toggle */}
+                <button
+                  type="button"
+                  onClick={() => setWebSearchEnabled(!webSearchEnabled)}
+                  className={`flex-shrink-0 p-1.5 rounded-lg transition-colors duration-150 ${
+                    webSearchEnabled
+                      ? 'text-brownish-gray-100 bg-brownish-gray-600'
+                      : 'text-brownish-gray-400 hover:text-brownish-gray-200 hover:bg-brownish-gray-700'
+                  }`}
+                  title={webSearchEnabled ? 'Web search enabled' : 'Enable web search'}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                   </svg>
                 </button>
 

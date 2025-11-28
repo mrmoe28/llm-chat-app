@@ -161,23 +161,23 @@ export default function DocumentsPanel({ isOpen, onClose, projectId, projectName
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-      <div className="bg-brownish-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col border border-brownish-gray-700">
+    <div className="fixed inset-0 bg-brownish-gray-950/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div className="bg-brownish-gray-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col border border-brownish-gray-700/50">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-brownish-gray-700">
+        <div className="flex items-center justify-between p-6 border-b border-brownish-gray-800">
           <div>
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-brownish-gray-100">
               Documents - {projectName}
             </h2>
-            <p className="text-sm text-brownish-gray-400 mt-1">
+            <p className="text-sm text-brownish-gray-500 mt-1">
               {documents.length} {documents.length === 1 ? 'document' : 'documents'}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-brownish-gray-400 hover:text-white transition-colors rounded-lg p-1 hover:bg-brownish-gray-700"
+            className="text-brownish-gray-400 hover:text-brownish-gray-200 transition-colors rounded-lg p-1.5 hover:bg-brownish-gray-800"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -193,8 +193,8 @@ export default function DocumentsPanel({ isOpen, onClose, projectId, projectName
             onDrop={handleDrop}
             className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
               dragActive
-                ? 'border-brownish-gray-500 bg-brownish-gray-700 bg-opacity-50'
-                : 'border-brownish-gray-600 hover:border-brownish-gray-500'
+                ? 'border-brownish-gray-400 bg-brownish-gray-800/50'
+                : 'border-brownish-gray-700 hover:border-brownish-gray-600'
             }`}
           >
             <input
@@ -207,7 +207,7 @@ export default function DocumentsPanel({ isOpen, onClose, projectId, projectName
             />
 
             <svg
-              className="w-12 h-12 mx-auto mb-4 text-brownish-gray-400"
+              className="w-12 h-12 mx-auto mb-4 text-brownish-gray-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -223,18 +223,18 @@ export default function DocumentsPanel({ isOpen, onClose, projectId, projectName
             <p className="text-brownish-gray-200 mb-2">
               {dragActive ? 'Drop files here' : 'Drag and drop files here'}
             </p>
-            <p className="text-sm text-brownish-gray-400 mb-4">or</p>
+            <p className="text-sm text-brownish-gray-500 mb-4">or</p>
 
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="px-4 py-2 bg-brownish-gray-600 text-white rounded-xl hover:bg-brownish-gray-500 transition-colors disabled:bg-brownish-gray-700 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+              className="px-5 py-2.5 bg-brownish-gray-500 text-white rounded-xl hover:bg-brownish-gray-400 transition-colors disabled:bg-brownish-gray-700 disabled:cursor-not-allowed font-medium shadow-lg"
             >
               {uploading ? 'Uploading...' : 'Browse Files'}
             </button>
 
-            <p className="text-xs text-brownish-gray-400 mt-3">
+            <p className="text-xs text-brownish-gray-500 mt-4">
               Supports PDF, TXT, DOCX (max 10MB per file)
             </p>
           </div>
@@ -242,7 +242,7 @@ export default function DocumentsPanel({ isOpen, onClose, projectId, projectName
           {/* Documents List */}
           {loading ? (
             <div className="text-center py-8">
-              <div className="inline-flex items-center gap-2 text-brownish-gray-400">
+              <div className="inline-flex items-center gap-2 text-brownish-gray-500">
                 <span className="inline-block w-2 h-2 bg-brownish-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
                 <span className="inline-block w-2 h-2 bg-brownish-gray-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
                 <span className="inline-block w-2 h-2 bg-brownish-gray-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
@@ -250,28 +250,28 @@ export default function DocumentsPanel({ isOpen, onClose, projectId, projectName
             </div>
           ) : documents.length > 0 ? (
             <div className="mt-6 space-y-2">
-              <h3 className="text-sm font-semibold text-brownish-gray-400 mb-3 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-brownish-gray-500 mb-3 uppercase tracking-wider">
                 Uploaded Documents
               </h3>
               {documents.map((doc) => (
                 <div
                   key={doc.id}
-                  className="flex items-center justify-between p-4 bg-brownish-gray-700 rounded-xl hover:bg-brownish-gray-600 transition-colors group border border-brownish-gray-600"
+                  className="flex items-center justify-between p-4 bg-brownish-gray-800 rounded-xl hover:bg-brownish-gray-700 transition-colors group border border-brownish-gray-700"
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     {/* File icon */}
                     <div className="flex-shrink-0">
-                      <svg className="w-8 h-8 text-brownish-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-8 h-8 text-brownish-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                     </div>
 
                     {/* File info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-white font-medium truncate">
+                      <p className="text-brownish-gray-100 font-medium truncate">
                         {doc.original_filename}
                       </p>
-                      <p className="text-xs text-brownish-gray-400">
+                      <p className="text-xs text-brownish-gray-500">
                         {formatFileSize(doc.file_size)} • {formatDate(doc.upload_date)} • {doc.chunk_count} chunks
                       </p>
                     </div>
@@ -280,7 +280,7 @@ export default function DocumentsPanel({ isOpen, onClose, projectId, projectName
                   {/* Delete button */}
                   <button
                     onClick={() => handleDelete(doc.id, doc.original_filename)}
-                    className="flex-shrink-0 ml-4 text-brownish-gray-400 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                    className="flex-shrink-0 ml-4 text-brownish-gray-500 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -290,17 +290,17 @@ export default function DocumentsPanel({ isOpen, onClose, projectId, projectName
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-brownish-gray-400">
+            <div className="text-center py-8 text-brownish-gray-500">
               <p>No documents uploaded yet</p>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-brownish-gray-700">
+        <div className="p-6 border-t border-brownish-gray-800">
           <button
             onClick={onClose}
-            className="w-full px-4 py-2 bg-brownish-gray-700 text-white rounded-xl hover:bg-brownish-gray-600 transition-colors border border-brownish-gray-600"
+            className="w-full px-5 py-2.5 bg-brownish-gray-800 text-brownish-gray-200 rounded-xl hover:bg-brownish-gray-700 transition-colors border border-brownish-gray-700"
           >
             Close
           </button>

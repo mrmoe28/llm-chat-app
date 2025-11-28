@@ -10,10 +10,39 @@ import {
 
 const LM_STUDIO_URL = process.env.LM_STUDIO_API_URL || 'http://192.168.1.197:1234/v1';
 
+interface SearchResult {
+  title: string;
+  url: string;
+  snippet: string;
+}
+
+async function performWebSearch(query: string): Promise<SearchResult[]> {
+  try {
+    // Use the internal search API
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
+    });
+
+    if (!response.ok) {
+      console.error('Web search failed:', response.statusText);
+      return [];
+    }
+
+    const data = await response.json();
+    return data.results || [];
+  } catch (error) {
+    console.error('Web search error:', error);
+    return [];
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { message, userId, sessionId, projectId } = body;
+    const { message, userId, sessionId, projectId, webSearchEnabled } = body;
 
     if (!message || !userId) {
       return NextResponse.json(
@@ -44,6 +73,21 @@ export async function POST(request: NextRequest) {
       role: msg.role as 'user' | 'assistant',
       content: msg.content
     }));
+
+    // Web Search: Search the web if enabled
+    let webSearchContext = '';
+    let webSources: Array<{ title: string; url: string; snippet: string }> = [];
+
+    if (webSearchEnabled) {
+      const searchResults = await performWebSearch(message);
+      if (searchResults.length > 0) {
+        webSources = searchResults;
+        webSearchContext = '\n\nWeb search results:\n';
+        webSearchContext += searchResults.map((result, idx) => 
+          `[${idx + 1}] ${result.title}\nURL: ${result.url}\n${result.snippet}`
+        ).join('\n\n');
+      }
+    }
 
     // RAG: Search knowledge base if projectId is provided and has documents
     let ragContext = '';
@@ -88,6 +132,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Add web search context to the last user message if available
+    if (webSearchContext) {
+      const lastMessage = conversationHistory[conversationHistory.length - 1];
+      if (lastMessage && lastMessage.role === 'user') {
+        lastMessage.content += webSearchContext;
+      }
+    }
+
     // Add RAG context to the last user message if available
     if (ragContext) {
       const lastMessage = conversationHistory[conversationHistory.length - 1];
@@ -124,6 +176,7 @@ export async function POST(request: NextRequest) {
       message: assistantMessage,
       sessionId: currentSessionId,
       sources: sources.length > 0 ? sources : undefined,
+      webSources: webSources.length > 0 ? webSources : undefined,
     }, {
       headers: {
         'Access-Control-Allow-Origin': '*',

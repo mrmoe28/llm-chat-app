@@ -5,6 +5,8 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  output: 'standalone',
+  outputFileTracingRoot: __dirname,
 }
 
 module.exports = nextConfig
